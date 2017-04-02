@@ -20,7 +20,9 @@ public class BracketExpression implements Node {
       f1 = n1;
       f2 = n2;
    }
-
+   public String toString() {
+      return f0.toString() + f1.toString() + f2.toString();
+   }
    public BracketExpression(Expression n0) {
       f0 = new NodeToken("(");
       f1 = n0;

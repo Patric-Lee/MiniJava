@@ -12,6 +12,10 @@ public class NodeOptional implements Node {
       node = null;
    }
 
+   public String toString() {
+      if(node == null) return null;
+      else return node.toString();
+   }
    public NodeOptional(Node n) {
       addNode(n);
    }

@@ -15,6 +15,9 @@ public class MinusExpression implements Node {
    public NodeToken f1;
    public PrimaryExpression f2;
 
+   public String toString() {
+      return f0.toString() + f1.toString() + f2.toString();
+   }
    public MinusExpression(PrimaryExpression n0, NodeToken n1, PrimaryExpression n2) {
       f0 = n0;
       f1 = n1;

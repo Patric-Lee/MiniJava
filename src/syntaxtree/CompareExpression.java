@@ -20,6 +20,9 @@ public class CompareExpression implements Node {
       f1 = n1;
       f2 = n2;
    }
+   public String toString() {
+      return f0.toString() + f1.toString() + f2.toString();
+   }
 
    public CompareExpression(PrimaryExpression n0, PrimaryExpression n1) {
       f0 = n0;

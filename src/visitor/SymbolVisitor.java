@@ -63,7 +63,7 @@ public class SymbolVisitor extends GJDepthFirst<String, SymbolTable> {
          * f2 -> <EOF>
          */
         public String visit(Goal n, SymbolTable argu) {
-            System.out.println("Goal visited!");
+           // System.out.println("Goal visited!");
             String _ret=null;
             n.f0.accept(this, argu);
             n.f1.accept(this, argu);
@@ -92,7 +92,7 @@ public class SymbolVisitor extends GJDepthFirst<String, SymbolTable> {
          * f17 -> "}"
          */
         public String visit(MainClass n, SymbolTable a) {
-            System.out.println("MainClass visited!");
+           // System.out.println("MainClass visited!");
             String _ret=null;
             ClassTable argu = new ClassTable(n.f1.f0.toString(), -1, null);
             ClassTree.addClass(argu);
@@ -117,7 +117,7 @@ public class SymbolVisitor extends GJDepthFirst<String, SymbolTable> {
             n.f15.accept(this, met);
             n.f16.accept(this, met);
             n.f17.accept(this, met);
-            argu.dump();
+          //  argu.dump();
             return _ret;
         }
 
@@ -150,7 +150,7 @@ public class SymbolVisitor extends GJDepthFirst<String, SymbolTable> {
             n.f4.accept(this, argu);
             n.f5.accept(this, argu);
 
-            argu.dump();
+         //   argu.dump();
             return _ret;
         }
 
@@ -177,7 +177,7 @@ public class SymbolVisitor extends GJDepthFirst<String, SymbolTable> {
             n.f5.accept(this, argu);
             n.f6.accept(this, argu);
             n.f7.accept(this, argu);
-            argu.dump();
+            //argu.dump();
             return _ret;
         }
 
@@ -187,13 +187,14 @@ public class SymbolVisitor extends GJDepthFirst<String, SymbolTable> {
          * f2 -> ";"
          */
         public String visit(VarDeclaration n, SymbolTable argu) {
-            System.out.println("VarDeclaration " + n.f1.f0.toString() + " visited!");
+         //   System.out.println("VarDeclaration " + n.f1.f0.toString() + " visited!");
             String _ret=null;
             Variable v = new Variable(n.f1.f0.toString());
+            argu.addVariable(v);
             n.f0.accept(this, v);
             n.f1.accept(this, v);
             n.f2.accept(this, v);
-            argu.addVariable(v);
+
             return _ret;
         }
 
@@ -278,8 +279,9 @@ public class SymbolVisitor extends GJDepthFirst<String, SymbolTable> {
         public String visit(Type n, SymbolTable argu) {
             String _ret=null;
             String s = n.f0.accept(this, argu);
-            if(s == null) argu.addType("Class");
-            else argu.addType(s);
+         //   if(s == null) argu.addType("Class");
+         //   else
+                argu.addType(s, 0);
             return _ret;
         }
 
@@ -349,9 +351,10 @@ public class SymbolVisitor extends GJDepthFirst<String, SymbolTable> {
          */
         public String visit(AssignmentStatement n, SymbolTable argu) {
             String _ret=null;
+            Variable v = ((MethodTable)argu).getVariable(n.f0.toString());
             n.f0.accept(this, argu);
             n.f1.accept(this, argu);
-            n.f2.accept(this, argu);
+            n.f2.accept(this, v);
             n.f3.accept(this, argu);
             return _ret;
         }
@@ -445,7 +448,7 @@ public class SymbolVisitor extends GJDepthFirst<String, SymbolTable> {
          */
         public String visit(Expression n, SymbolTable argu) {
             String _ret=null;
-           // n.f0.accept(this, argu);
+            n.f0.accept(this, argu);
             return _ret;
         }
 
@@ -631,8 +634,8 @@ public class SymbolVisitor extends GJDepthFirst<String, SymbolTable> {
          * f0 -> <IDENTIFIER>
          */
         public String visit(Identifier n, SymbolTable argu) {
-            System.out.println("Identifier " + n.f0.toString() +" Visited!");
-            String _ret=null;
+          //  System.out.println("Identifier " + n.f0.toString() +" Visited!");
+            String _ret=n.f0.toString();
             n.f0.accept(this, argu);
             return _ret;
         }
@@ -660,6 +663,9 @@ public class SymbolVisitor extends GJDepthFirst<String, SymbolTable> {
             n.f2.accept(this, argu);
             n.f3.accept(this, argu);
             n.f4.accept(this, argu);
+            try {((Variable)argu).setLength(Integer.parseInt(n.f3.toString()));}
+            catch (NumberFormatException e){}
+
             return _ret;
         }
 

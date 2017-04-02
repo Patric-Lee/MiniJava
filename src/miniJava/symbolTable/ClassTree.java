@@ -13,7 +13,7 @@ public class ClassTree {
 	public static final HashMap<String, ClassTable> classes = new HashMap<String, ClassTable>();
 	public static boolean addClass(ClassTable c) {
 		if(classes.containsKey(c.getName())) {
-			System.out.println("Line " + c.getLine()+": "+c.getName() + " has been defined.");
+			System.out.println(c.getName() + " has been defined.");
 			return false;
 		}
 		classes.put(c.getName(), c);

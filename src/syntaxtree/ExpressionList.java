@@ -17,7 +17,9 @@ public class ExpressionList implements Node {
       f0 = n0;
       f1 = n1;
    }
-
+   public String toString() {
+      return f0.toString() + f1.toString();
+   }
    public void accept(visitor.Visitor v) {
       v.visit(this);
    }

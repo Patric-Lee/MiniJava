@@ -31,6 +31,9 @@ public class AllocationExpression implements Node {
       f3 = new NodeToken(")");
    }
 
+   public String toString() {
+      return f1.toString();
+   }
    public void accept(visitor.Visitor v) {
       v.visit(this);
    }

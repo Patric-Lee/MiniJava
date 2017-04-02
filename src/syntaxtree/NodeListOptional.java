@@ -19,6 +19,13 @@ public class NodeListOptional implements NodeListInterface {
       addNode(firstNode);
    }
 
+   public String toString() {
+      String s = "";
+      for(int i = 0; i < nodes.size();++i) {
+         s += nodes.elementAt(i).toString();
+      }
+      return s;
+   }
    public void addNode(Node n) {
       nodes.addElement(n);
    }

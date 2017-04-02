@@ -29,10 +29,10 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
 
     public VariableType visit(NodeListOptional n, SymbolTable argu) {
         if ( n.present() ) {
-            VariableType _ret=null;
+            VarsType _ret=new VarsType();
             int _count=0;
             for ( Enumeration<Node> e = n.elements(); e.hasMoreElements(); ) {
-                e.nextElement().accept(this,argu);
+                _ret.addTypes(e.nextElement().accept(this,argu));
                 _count++;
             }
             return _ret;
@@ -216,7 +216,9 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         //n.f7.accept(this, argu);
         n.f8.accept(this, argu);
         n.f9.accept(this, argu);
-        n.f10.accept(this, argu);
+        VariableType u = n.f10.accept(this, argu);
+        if(!u.isDescendent(argu.getReturnType()))
+            System.out.println(n.f10.toString()+" does not match the return type of function " + n.f2.toString() + ".");
         n.f11.accept(this, argu);
         n.f12.accept(this, argu);
         return _ret;
@@ -276,7 +278,7 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         n.f2.accept(this, argu);
-        return new ArraysType();
+        return new ArraysType(0);
     }
 
     /**
@@ -342,7 +344,7 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
             System.out.println(n.f0.toString() + " is undefined.");
         }
         else {
-            if(_ret.isDescendent(u)) System.out.println(n.f2.toString() + " does not match the type of " + n.f0.toString());
+            if(u == null || !u.isDescendent(_ret)) System.out.println(n.f2.toString() + " does not match the type of " + n.f0.toString());
 
         }
         return _ret;
@@ -361,7 +363,7 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         VariableType _ret=null;
         _ret = n.f0.accept(this, argu);
         if(!_ret.isArray()) {
-            System.out.println(n.f2.toString() + " should be an array.");
+            System.out.println(n.f0.toString() + " should be an array.");
         }
         n.f1.accept(this, argu);
         _ret = n.f2.accept(this, argu);
@@ -394,13 +396,14 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         _ret = n.f2.accept(this, argu);
+        if(!_ret.isBool()) {
+            System.out.println("IF statement: " + n.f2.toString() + " should be a boolean.");
+        }
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
         n.f5.accept(this, argu);
         n.f6.accept(this, argu);
-        if(!_ret.isBool()) {
-            System.out.println(n.f2.toString() + " should be a boolean.");
-        }
+
         return _ret;
     }
 
@@ -416,11 +419,12 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         _ret = n.f2.accept(this, argu);
+        if(!_ret.isBool()) {
+            System.out.println("WHILE statemtn" + n.f2.toString() + " should be a boolean.");
+        }
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
-        if(!_ret.isBool()) {
-            System.out.println(n.f2.toString() + " should be a boolean.");
-        }
+
         return _ret;
     }
 
@@ -439,7 +443,7 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
         if(!_ret.isInt()) {
-            System.out.println(n.f2.toString() + " should be an integer.");
+            System.out.println("PRINT statement: " + n.f2.toString() + " should be an integer.");
         }
         return _ret;
     }
@@ -471,10 +475,10 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         n.f1.accept(this, argu);
         VariableType u2 = n.f2.accept(this, argu);
         if(!u1.isBool()) {
-            System.out.println(n.f0.toString() + " should be a boolean.");
+            System.out.println("AND expression: " + n.f0.toString() + " should be a boolean.");
         }
         if(!u2.isBool()) {
-            System.out.println(n.f2.toString() + " should be a boolean.");
+            System.out.println("AND.expression: " + n.f2.toString() + " should be a boolean.");
         }
 
 
@@ -492,10 +496,10 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         n.f1.accept(this, argu);
         VariableType u2 = n.f2.accept(this, argu);
         if(!u1.isInt()) {
-            System.out.println(n.f0.toString() + " should be an integer.");
+            System.out.println("COMPARE: "+n.f0.toString() + " should be an integer.");
         }
         if(!u2.isInt()) {
-            System.out.println(n.f2.toString() + " should be an integer.");
+            System.out.println("COMPARE: " + n.f2.toString() + " should be an integer.");
         }
 
         return _ret;
@@ -512,10 +516,13 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         n.f1.accept(this, argu);
         VariableType u2 = n.f2.accept(this, argu);
         if(!u1.isInt()) {
-            System.out.println(n.f0.toString() + " should be an integer.");
+            System.out.println("PLUS: "+n.f0.toString() + " should be an integer.");
         }
         if(!u2.isInt()) {
-            System.out.println(n.f2.toString() + " should be an integer.");
+            System.out.println("PLUS: "+n.f2.toString() + " should be an integer.");
+        }
+        if(u1.isInt() && u2.isInt()) {
+            //_ret.length = Integer.parseInt(n.f0.toString()) + Integer.parseInt(n.f2.toString());
         }
         return _ret;
     }
@@ -531,10 +538,13 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         n.f1.accept(this, argu);
         VariableType u2 = n.f2.accept(this, argu);
         if(!u1.isInt()) {
-            System.out.println(n.f0.toString() + " should be an integer.");
+            System.out.println("MINUS: "+n.f0.toString() + " should be an integer.");
         }
         if(!u2.isInt()) {
-            System.out.println(n.f2.toString() + " should be an integer.");
+            System.out.println("MINUS: "+n.f2.toString() + " should be an integer.");
+        }
+        if(u1.isInt() && u2.isInt()) {
+          //  _ret.length = Integer.parseInt(n.f0.toString()) - Integer.parseInt(n.f2.toString());
         }
         return _ret;
     }
@@ -550,10 +560,13 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         n.f1.accept(this, argu);
         VariableType u2 = n.f2.accept(this, argu);
         if(!u1.isInt()) {
-            System.out.println(n.f0.toString() + " should be an integer.");
+            System.out.println("TIMES: "+n.f0.toString() + " should be an integer.");
         }
         if(!u2.isInt()) {
-            System.out.println(n.f2.toString() + " should be an integer.");
+            System.out.println("TIMES: "+n.f2.toString() + " should be an integer.");
+        }
+        if(u1.isInt() && u2.isInt()) {
+            //_ret.length = Integer.parseInt(n.f0.toString()) * Integer.parseInt(n.f2.toString());
         }
         return _ret;
     }
@@ -570,17 +583,28 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
        // }
         VariableType _ret=n.f0.accept(this, argu);
         if(!_ret.isArray()) {
-            System.out.println(n.f0.toString() + " should be an array.");
+            System.out.println("ARRAY LOOKUP: " + n.f0.toString() + " should be an array.");
         }
         n.f1.accept(this, argu);
         VariableType u = n.f2.accept(this, argu);
         n.f3.accept(this, argu);
         if(!u.isInt()) {
-            System.out.println(n.f2.toString() + " should be an integer.");
+            System.out.println("ARRAY LOOKUUP: " + n.f2.toString() + " should be an integer.");
         }
+       else
+           try {
+                Variable v = ((MethodTable)argu).getVariable(n.f0.toString());
+               if (v != null &&
+                       Integer.parseInt(n.f2.toString()) < 0 || v.getType().length != 0 && Integer.parseInt(n.f2.toString()) >= v.getType().length) {
+                   System.out.println(n.f2.toString() + " is beyond the boundary of the array.");
+
+               }
+
+           }catch(NumberFormatException e) {}
 
 
-        _ret = ((MethodTable)argu).getVariable(n.f0.toString()).getType();
+
+      //  _ret = ((MethodTable)argu).getVariable(n.f0.toString()).getType();
         return new IntType();
     }
 
@@ -592,7 +616,7 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
     public VariableType visit(ArrayLength n, SymbolTable argu) {
         VariableType _ret= n.f0.accept(this, argu);
         if(!_ret.isArray()) {
-            System.out.println(n.f0.toString() + " should be an array.");
+            System.out.println("ARRAY LENGTH: " + n.f0.toString() + " should be an array.");
         }
         n.f1.accept(this, argu);
         n.f2.accept(this, argu);
@@ -608,20 +632,57 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
      * f5 -> ")"
      */
     public VariableType visit(MessageSend n, SymbolTable argu) {
-        if(ClassTree.getClassTable(n.f0.toString()) == null)
+        //if(ClassTree.getClassTable(n.f0.toString()) == null)
+        /*if(!n.f0.toString().equals("this") &&
+                ((MethodTable)argu).isDefined(n.f0.toString()) == null && ClassTree.getClassTable(n.f0.toString()) == null)
             System.out.println(n.f0.toString() + " is undefined.");
-        else if(!ClassTree.getClassTable(n.f0.toString()).doesMethodExist(n.f2.f0.toString()))
+        else if(n.f0.toString().equals("this") && !((MethodTable)argu).getClassTable().isMethodDefined(n.f2.f0.toString())) {
+            System.out.println(n.f0.toString() + " is undefined.");
+        }
+        else if(((MethodTable)argu).isDefined(n.f0.toString()) != null&&
+        !ClassTree.getClassTable(((ClassType)((MethodTable)argu).isDefined(n.f0.toString()).getType()).className).isMethodDefined(n.f2.f0.toString()))
+            System.out.println(n.f2.f0.toString() + " is undefined.");
+        else if(ClassTree.getClassTable(n.f0.toString()) != null && !ClassTree.getClassTable(n.f0.toString()).isMethodDefined(n.f2.f0.toString()))
             System.out.println(n.f2.f0.toString() + " is undefined.");
         else {
-            VariableType _ret = ClassTree.getClassTable(n.f0.toString()).getMethod(n.f2.f0.toString()).getReturnType();
-            n.f0.accept(this, argu);
+            MethodTable mt = null;
+            if(n.f0.toString().equals("this")) {
+                mt = ((MethodTable)argu).getClassTable().getMethod(n.f2.f0.toString());
+            }
+            else if(((MethodTable)argu).isDefined(n.f0.toString()) != null)
+                mt = ClassTree.getClassTable((((ClassType)((MethodTable)argu).isDefined(n.f0.toString()).getType()).className)).getMethod(n.f2.f0.toString());
+            else if(ClassTree.getClassTable(n.f0.toString()) != null)
+                mt = ClassTree.getClassTable(n.f0.toString()).getMethod(n.f2.toString());*/
+            VariableType k = n.f0.accept(this, argu);
+            ClassTable ct = null;
+            if(k == null) {
+                System.out.println(n.f0.toString() + " is undefined.");
+            }else if(k.isArray() || k.isBool() || k.isInt()) {
+                System.out.println(n.f0.toString() + " should be a class.");
+            }
+            else {
+               ct = ClassTree.getClassTable(((ClassType)k).className);
+            }
             n.f1.accept(this, argu);
-            n.f2.accept(this, argu);
+
+            MethodTable mt = null ;
+            if(ct != null && !ct.isMethodDefined(n.f2.toString()))
+                System.out.println(n.f2.toString() + " is undefined.");
+            else if(ct != null && ct.isMethodDefined(n.f2.toString()))
+                mt = ct.getMethod(n.f2.toString());
+            n.f2.accept(this, ct);
             n.f3.accept(this, argu);
-            n.f4.accept(this, argu);
+            VarsType vstt = (VarsType)n.f4.accept(this, argu);
+            Vector<VariableType> vt = (vstt == null)? null:vstt.types;
             n.f5.accept(this, argu);
-            return _ret;
-        }
+            if(mt != null) {
+                if (!mt.paramsChecking(vt)) {
+                    System.out.println("The parameters do not match.");
+                }
+
+                return mt.getReturnType();
+            }
+        //}
         return null;
     }
 
@@ -630,9 +691,10 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
      * f1 -> ( ExpressionRest() )*
      */
     public VariableType visit(ExpressionList n, SymbolTable argu) {
-        VariableType _ret=null;
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
+        VarsType _ret= new VarsType();
+        _ret.addTypes(n.f0.accept(this, argu));
+        VariableType vt = n.f1.accept(this, argu);
+        if(vt != null) _ret.addTypes(vt);
         return _ret;
     }
 
@@ -643,7 +705,7 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
     public VariableType visit(ExpressionRest n, SymbolTable argu) {
         VariableType _ret=null;
         n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
+        _ret = n.f1.accept(this, argu);
         return _ret;
     }
 
@@ -668,6 +730,7 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
      */
     public VariableType visit(IntegerLiteral n, SymbolTable argu) {
         VariableType _ret=new IntType();
+        _ret.length = Integer.parseInt(n.f0.toString());
         n.f0.accept(this, argu);
         return _ret;
     }
@@ -698,9 +761,8 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         n.f0.accept(this, argu);
        // _ret = ((MethodTable)argu).getVariable(n.f0.toString()).getType();
         if(argu instanceof MethodTable) {
-            if(((MethodTable)argu).isDefined(n.f0.toString()) == null)
-                System.out.println(n.f0.toString() + " is undefined.");
-            else if(ClassTree.getClassTable(n.f0.toString()) == null) {
+            if(((MethodTable)argu).isDefined(n.f0.toString()) == null && ClassTree.getClassTable(n.f0.toString()) == null
+                    && !((MethodTable)argu).getClassTable().isMethodDefined(n.f0.toString())) {
                 System.out.println(n.f0.toString() + " is undefined.");
             }
             else if(((MethodTable)argu).isDefined(n.f0.toString()) != null)
@@ -711,6 +773,7 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         else if(argu instanceof ClassTable) {
             return null;
         }
+        //_ret.length = 0;
         return _ret;
     }
 
@@ -731,14 +794,15 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
      * f4 -> "]"
      */
     public VariableType visit(ArrayAllocationExpression n, SymbolTable argu) {
-        VariableType _ret=new ArraysType();
+
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         n.f2.accept(this, argu);
         VariableType u = n.f3.accept(this, argu);
+        VariableType _ret=new ArraysType(u.length);
         n.f4.accept(this, argu);
         if(!u.isInt()) {
-            System.out.println(n.f3.toString() + " should be an integer.");
+            System.out.println("ARRAY ALLOCATION: " + n.f3.toString() + " should be an integer.");
         }
         return _ret;
     }
@@ -770,8 +834,8 @@ public class TypeCheckVisitor extends GJDepthFirst<VariableType, SymbolTable> {
         VariableType _ret=null;
         n.f0.accept(this, argu);
         _ret = n.f1.accept(this, argu);
-        if(_ret != new BoolType()) {
-            System.out.println(n.f1.toString() + "should be boolean.");
+        if(!_ret.isBool()) {
+            System.out.println("NOT expression: " + n.f1.toString() + "should be boolean.");
         }
         return _ret;
     }

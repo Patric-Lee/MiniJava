@@ -87,6 +87,7 @@ public class MainClass implements Node {
       f17 = new NodeToken("}");
    }
 
+
    public void accept(visitor.Visitor v) {
       v.visit(this);
    }

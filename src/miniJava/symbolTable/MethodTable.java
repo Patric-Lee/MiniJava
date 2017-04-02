@@ -38,7 +38,7 @@ public class MethodTable extends SymbolTable {
 		return localVariables.get(s);
 	}
 	public boolean canOverride(MethodTable m) {
-		return paramsCheck(m.getParams()) && (m.getReturnType() == returnType);
+		return paramsCheck(m.getParams()) && (m.getReturnType().isIdentical(returnType));
 	}
 	public Variable isDefined(String s) {
 		if(localVariables.get(s) != null) {
@@ -73,13 +73,13 @@ public class MethodTable extends SymbolTable {
 	}
 
 	@Override
-	public void addType(String s) {
+	public void addType(String s, int i) {
 
 		switch(s) {
 			case "Integer":
 				returnType = new IntType();break;
 			case "Array":
-				returnType = new ArraysType();break;
+				returnType = new ArraysType(i);break;
 			case "Boolean":
 				returnType = new BoolType();break;
 			//case "Class":
@@ -88,12 +88,12 @@ public class MethodTable extends SymbolTable {
 				returnType = new ClassType(s);
 
 		}
-		System.out.println(returnType);
+		//System.out.println(returnType);
 	}
 	@Override
 	public boolean addVariable(Variable v) {
 		if(isRepeated(v)) {
-			System.out.println("Line:" + v.getLine() + "Variable " + v.getName() + " has been defined.");
+			System.out.println("Variable " + v.getName() + " has been defined.");
 			return false;
 		}
 		localVariables.put(v.getName(), v);
@@ -106,7 +106,7 @@ public class MethodTable extends SymbolTable {
 	public boolean addParams(Variable v) {
 		if(v == null) return false;
 		if(isRepeated(v)) {
-			System.out.println("Line:" + v.getLine() + " Variable " + v.getName() + " has been defined.");
+			System.out.println(" Variable " + v.getName() + " has been defined.");
 			return false;
 		}
 		params.add(v);
@@ -116,12 +116,13 @@ public class MethodTable extends SymbolTable {
 
 	public boolean addLocalVariables(Variable v) {
 		if(isRepeated(v)) {
-			System.out.println("Line:" + v.getLine() + "Variable " + v.getName() + " has been defined.");
+			System.out.println("Variable " + v.getName() + " has been defined.");
 			return false;
 		}
 		localVariables.put(v.getName(), v);
 		return true;
 	}
+
 
 	/*
 	 *  Use this function to check if the parameters are compatible when a function is called.
@@ -136,6 +137,31 @@ public class MethodTable extends SymbolTable {
 			return true;
 		}
 		else return false;
+	}
+	public boolean paramsChecking(Vector<VariableType> paramList) {
+		if(params == null && paramList == null || params==null &&paramList!=null && paramList.size() == 0 ||
+				params != null && params.size() == 0 && paramList == null) {
+
+			return true;
+		}
+		else if(params != null && paramList != null) {
+			if (params.size() != paramList.size()) {
+				System.out.println("The number of parameters is incorrect.");
+				return false; //Check if the numbers of parameters are equal
+			}
+			boolean flag = true;
+			for (int i = 0; i < params.size(); ++i) {
+				if (paramList.get(i) == null || !paramList.get(i).isDescendent(params.get(i).getType())) {
+					System.out.println("The "+ (i+1) + "-th parameter " + "does not match. It should be " + params.get(i).getType().type + ".");
+					flag = false;
+				}
+			}
+			return flag;
+		}
+		else {
+			System.out.println("The number of parameters is incorrect.");
+			return false;
+		}
 	}
 
 }

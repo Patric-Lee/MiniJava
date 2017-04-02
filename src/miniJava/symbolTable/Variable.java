@@ -18,12 +18,16 @@ public class Variable extends SymbolTable {
 	public VariableType getType() {
 		return type;
 	}
-	public void addType(String s) {
+	public boolean setLength(int l) {
+		if(type != null) {type.length = l;return true;}
+		else return false;
+	}
+	public void addType(String s, int i) {
 		switch(s) {
 			case "Integer":
 				type = new IntType();break;
 			case "Array":
-				type = new ArraysType();break;
+				type = new ArraysType(i);break;
 			case "Boolean":
 				type = new BoolType();break;
 			//case "Class":
@@ -32,7 +36,7 @@ public class Variable extends SymbolTable {
 				type = new ClassType(s);
 
 		}
-		System.out.println(type);
+		//System.out.println(type);
 	}
 	public String getName() {
 		return name;

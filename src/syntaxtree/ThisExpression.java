@@ -19,6 +19,9 @@ public class ThisExpression implements Node {
       f0 = new NodeToken("this");
    }
 
+   public String toString() {
+      return f0.toString();
+   }
    public void accept(visitor.Visitor v) {
       v.visit(this);
    }

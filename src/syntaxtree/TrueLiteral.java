@@ -19,6 +19,9 @@ public class TrueLiteral implements Node {
       f0 = new NodeToken("true");
    }
 
+   public String toString() {
+      return f0.toString();
+   }
    public void accept(visitor.Visitor v) {
       v.visit(this);
    }

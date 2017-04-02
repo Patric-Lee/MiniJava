@@ -5,7 +5,9 @@ package miniJava.symbolTable;
  */
 
 public class ArraysType extends VariableType {
-    public ArraysType() {
+
+    public ArraysType(int i) {
         type = "arrayType";
+        length = i;
     }
 }

@@ -7,6 +7,7 @@ import	parser.*;
 import visitor.TypeCheckVisitor;
 
 public class TypeCheck {
+
 	public static void main(String[] args) {
 		try {
 		//Open the source code

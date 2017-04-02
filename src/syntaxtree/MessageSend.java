@@ -38,7 +38,9 @@ public class MessageSend implements Node {
       f4 = n2;
       f5 = new NodeToken(")");
    }
-
+   public String toString() {
+      return f0.toString() + f1.toString() + f2.toString() + f3.toString() + f4.toString() + f5.toString();
+   }
    public void accept(visitor.Visitor v) {
       v.visit(this);
    }

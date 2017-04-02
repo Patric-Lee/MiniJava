@@ -35,8 +35,27 @@ public class ClassTable extends SymbolTable {
 	public boolean doesMethodExist(String m) {
 		return methods.containsKey(m);
 	}
+	public boolean isMethodDefined(String m) {
+		if(methods.containsKey(m)) return true;
+		ClassTable tmp = this;
+		while(tmp.getParent() != null) {
+			tmp = ClassTree.getClassTable(tmp.getParent());
+			if(tmp.doesMethodExist(m)) return true;
+		}
+		return false;
+	}
 	public MethodTable getMethod(String s) {
-		return methods.get(s);
+		 MethodTable mt = methods.get(s);
+		 if(mt != null) return mt;
+		 else {
+			 ClassTable tmp = this;
+			 while(tmp.getParent() != null) {
+				 tmp = ClassTree.getClassTable(tmp.getParent());
+				 mt = tmp.getMethod(s);
+				 if(mt != null) return mt;
+			 }
+			 return null;
+		 }
 	}
 	public void canOverride() {
 		//HashMap<String, ClassTable> visited = new HashMap<String, ClassTable>();
@@ -73,6 +92,15 @@ public class ClassTable extends SymbolTable {
 				}
 
 
+	}
+	@Override
+	public boolean addVariable(Variable v) {
+		if(localVariables.containsKey(v.getName())) {
+			System.out.println(v.getName() + " has been defined.");
+			return false;
+		}
+		localVariables.put(v.getName(), v);
+		return true;
 	}
 
 	public Map<String, Variable> getLocalVariables() {
