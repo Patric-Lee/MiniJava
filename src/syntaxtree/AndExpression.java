@@ -26,7 +26,9 @@ public class AndExpression implements Node {
       f1 = new NodeToken("&&");
       f2 = n1;
    }
-
+   public String toString() {
+      return f0.toString() + f1.toString() + f2.toString();
+   }
    public void accept(visitor.Visitor v) {
       v.visit(this);
    }

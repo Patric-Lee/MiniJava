@@ -21,15 +21,15 @@ public class Variable extends SymbolTable {
 	public void addType(String s) {
 		switch(s) {
 			case "Integer":
-				type = VariableType.intType;break;
+				type = new IntType();break;
 			case "Array":
-				type = VariableType.arrayType;break;
+				type = new ArraysType();break;
 			case "Boolean":
-				type = VariableType.boolType;break;
+				type = new BoolType();break;
 			//case "Class":
 			//	type = VariableType.classType;
 			default:
-				type = VariableType.classType;
+				type = new ClassType(s);
 
 		}
 		System.out.println(type);
@@ -37,7 +37,7 @@ public class Variable extends SymbolTable {
 	public String getName() {
 		return name;
 	}
-	public boolean isIdentical(Variable v) {
+	/*public boolean isIdentical(Variable v) {
 		if(v.type == VariableType.classType && type == VariableType.classType) {
 			//Check if v is the parent of this.
 			//To be written.
@@ -46,9 +46,18 @@ public class Variable extends SymbolTable {
 		if(v.type != type) return false;
 		else return true;
 	}
+	public boolean isIdentical(VariableType v) {
+		if(v == VariableType.classType && type == VariableType.classType) {
+			//Check if v is the parent of this.
+			//To be written.
+			return v.isParent(this);
+		}
+		if(v != type) return false;
+		else return true;
+	}
 	public boolean isParent(Variable v) {
 		//To be written
 		ClassTable here = classTree.getClassTable(this.getName());
 		return (here == classTree.getClassTable(v.getName()));
-	}
+	}*/
 }

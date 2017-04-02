@@ -4,6 +4,7 @@ import java.io.*;
 
 import miniJava.symbolTable.ClassTree;
 import	parser.*;
+import visitor.TypeCheckVisitor;
 
 public class TypeCheck {
 	public static void main(String[] args) {
@@ -19,11 +20,14 @@ public class TypeCheck {
 			classTree.doesFatherExist();
 			classTree.canOverride();
 			classTree.isInheritanceAcylic();
+			TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
+			typeCheckVisitor.visit(goal, null);
 		}
 		catch(Exception fileOpenE)
 		{
 			fileOpenE.printStackTrace();
 		}
+
 
 
 	}

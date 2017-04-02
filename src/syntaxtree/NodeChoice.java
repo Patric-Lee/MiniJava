@@ -17,6 +17,9 @@ public class NodeChoice implements Node {
       which = whichChoice;
    }
 
+   public String toString() {
+      return choice.toString();
+   }
    public void accept(visitor.Visitor v) {
       choice.accept(v);
    }

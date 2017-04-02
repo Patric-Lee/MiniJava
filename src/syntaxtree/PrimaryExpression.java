@@ -22,7 +22,9 @@ public class PrimaryExpression implements Node {
    public PrimaryExpression(NodeChoice n0) {
       f0 = n0;
    }
-
+   public String toString() {
+      return f0.toString();
+   }
    public void accept(visitor.Visitor v) {
       v.visit(this);
    }

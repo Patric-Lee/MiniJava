@@ -15,16 +15,46 @@ public class MethodTable extends SymbolTable {
 	private String name;
 	private Vector<Variable> params = new Vector<Variable>();
 	private VariableType returnType;
+	private ClassTable classTable;
 
-
+	public ClassTable getClassTable() {
+		return classTable;
+	}
 	public MethodTable(String name, SymbolTable s) {
 		this.name = name;
+		classTable = (ClassTable)s;
 		localVariables.putAll(((ClassTable)s).getLocalVariables());
 	};
+	public Vector<Variable> getParams() {
+		return params;
+	}
+	public VariableType getReturnType() {
+		return returnType;
+	}
 	public String getName() {
 		return name;
 	}
+	public Variable getVariable(String s) {
+		return localVariables.get(s);
+	}
+	public boolean canOverride(MethodTable m) {
+		return paramsCheck(m.getParams()) && (m.getReturnType() == returnType);
+	}
+	public Variable isDefined(String s) {
+		if(localVariables.get(s) != null) {
+			return localVariables.get(s);
+		}
+		else{
+			ClassTable tmp = classTable;
+			while(tmp.getParent() != null) {
+				tmp = ClassTree.getClassTable(tmp.getParent());
+				if(tmp.getVariable(s) != null)
+					return tmp.getVariable(s);
+			}
+			return null;
+		}
 
+	}
 	@TestOnly
 	public void dump() {
 		System.out.println(name);
@@ -47,15 +77,15 @@ public class MethodTable extends SymbolTable {
 
 		switch(s) {
 			case "Integer":
-				returnType = VariableType.intType;break;
+				returnType = new IntType();break;
 			case "Array":
-				returnType = VariableType.arrayType;break;
+				returnType = new ArraysType();break;
 			case "Boolean":
-				returnType = VariableType.boolType;break;
+				returnType = new BoolType();break;
 			//case "Class":
 			//	type = VariableType.classType;
 			default:
-				returnType = VariableType.classType;
+				returnType = new ClassType(s);
 
 		}
 		System.out.println(returnType);
@@ -63,7 +93,7 @@ public class MethodTable extends SymbolTable {
 	@Override
 	public boolean addVariable(Variable v) {
 		if(isRepeated(v)) {
-			System.out.println("Line:" + v.getLine() + "The name of the parameter " + v.getName() + " has been used.");
+			System.out.println("Line:" + v.getLine() + "Variable " + v.getName() + " has been defined.");
 			return false;
 		}
 		localVariables.put(v.getName(), v);
@@ -76,7 +106,7 @@ public class MethodTable extends SymbolTable {
 	public boolean addParams(Variable v) {
 		if(v == null) return false;
 		if(isRepeated(v)) {
-			System.out.println("Line:" + v.getLine() + "The name of the parameter " + v.getName() + " has been used.");
+			System.out.println("Line:" + v.getLine() + " Variable " + v.getName() + " has been defined.");
 			return false;
 		}
 		params.add(v);
@@ -86,7 +116,7 @@ public class MethodTable extends SymbolTable {
 
 	public boolean addLocalVariables(Variable v) {
 		if(isRepeated(v)) {
-			System.out.println("Line:" + v.getLine() + "The name of the variable " + v.getName() + " has been defined.");
+			System.out.println("Line:" + v.getLine() + "Variable " + v.getName() + " has been defined.");
 			return false;
 		}
 		localVariables.put(v.getName(), v);
@@ -97,11 +127,15 @@ public class MethodTable extends SymbolTable {
 	 *  Use this function to check if the parameters are compatible when a function is called.
 	 */
 	public boolean paramsCheck(Vector<Variable> paramList) {
-		if(params.size() != paramList.size()) return false; //Check if the numbers of parameters are equal
-		for(int i = 0; i < params.size(); ++i) {
-			if(!params.get(i).isIdentical(paramList.get(i))) return false;
+		if(params == null && paramList == null) return true;
+		else if(params != null && paramList != null) {
+			if (params.size() != paramList.size()) return false; //Check if the numbers of parameters are equal
+			for (int i = 0; i < params.size(); ++i) {
+				if (!params.get(i).getType().isIdentical(paramList.get(i).getType())) return false;
+			}
+			return true;
 		}
-		return true;
+		else return false;
 	}
 
 }

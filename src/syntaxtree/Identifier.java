@@ -21,6 +21,9 @@ public class Identifier implements Node {
    public <R,A> R accept(visitor.GJVisitor<R,A> v, A argu) {
       return v.visit(this,argu);
    }
+   public String toString() {
+      return f0.toString();
+   }
    public <R> R accept(visitor.GJNoArguVisitor<R> v) {
       return v.visit(this);
    }

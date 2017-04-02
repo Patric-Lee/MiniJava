@@ -32,15 +32,21 @@ public class ClassTable extends SymbolTable {
 		methods.put(m.getName(), m);
 		return true;
 	}
+	public boolean doesMethodExist(String m) {
+		return methods.containsKey(m);
+	}
+	public MethodTable getMethod(String s) {
+		return methods.get(s);
+	}
 	public void canOverride() {
-		HashMap<String, ClassTable> visited = new HashMap<String, ClassTable>();
-		Iterator iter = ClassTree.classes.entrySet().iterator();
-		while(iter.hasNext()) {
-			ClassTable here = (ClassTable) ((Map.Entry) iter.next()).getValue();
-			if (visited.containsKey(here.getName())) continue;
-			else {
-				ClassTable tmp = here;
-				visited.put(tmp.getName(), tmp);
+		//HashMap<String, ClassTable> visited = new HashMap<String, ClassTable>();
+		//Iterator iter = ClassTree.classes.entrySet().iterator();
+		//while(iter.hasNext()) {
+		//	ClassTable here = (ClassTable) ((Map.Entry) iter.next()).getValue();
+		//	if (visited.containsKey(here.getName())) continue;
+		//	else {
+				ClassTable tmp = this;
+		//		visited.put(tmp.getName(), tmp);
 				HashMap<String, ClassTable> checked = new HashMap<String, ClassTable>();
 				checked.put(tmp.getName(), tmp);
 				while (tmp.getParent() != null) {
@@ -50,12 +56,23 @@ public class ClassTable extends SymbolTable {
 						break;
 					} else if (ClassTree.classes.containsKey(tmp.getParent())) {
 						checked.put(tmp.getParent(), ClassTree.classes.get(tmp.getParent()));
-						visited.put(tmp.getParent(), ClassTree.classes.get(tmp.getParent()));
+		//				visited.put(tmp.getParent(), ClassTree.classes.get(tmp.getParent()));
+
+						Iterator it = this.methods.entrySet().iterator();
+						while(it.hasNext()) {
+							MethodTable mt = (MethodTable)((Map.Entry) it.next()).getValue();
+							if(ClassTree.classes.get(tmp.getParent()).doesMethodExist(mt.getName())) {
+								if(!mt.canOverride(ClassTree.classes.get(tmp.getParent()).getMethod(mt.getName())))
+									System.out.println(name + ":" + mt.getName() +" has been defined with distinct parameters in "+ tmp.getParent());
+							}
+						}
+
+
 						tmp = ClassTree.classes.get(tmp.getParent());
 					} else break;//Parents undefined
 				}
-			}
-		}
+
+
 	}
 
 	public Map<String, Variable> getLocalVariables() {
@@ -63,6 +80,9 @@ public class ClassTable extends SymbolTable {
 	}
 	public int getLine() {
 		return line;
+	}
+	public Variable getVariable(String s) {
+		return localVariables.get(s);
 	}
 	public String getParent() {
 		return parent;
