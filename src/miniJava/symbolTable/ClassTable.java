@@ -13,8 +13,8 @@ import java.util.Map;
  * Created by lianxiang on 2017/4/1.
  */
 public class ClassTable extends SymbolTable {
-	private HashMap<String, MethodTable> methods = new HashMap<String, MethodTable>();
-	private HashMap<String, Variable> localVariables = new HashMap<String, Variable>();
+	protected HashMap<String, MethodTable> methods = new HashMap<String, MethodTable>();
+	protected HashMap<String, Variable> localVariables = new HashMap<String, Variable>();
 	private int line;
 	private String parent;
 	private String name;

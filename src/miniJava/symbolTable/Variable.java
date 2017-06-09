@@ -8,7 +8,13 @@ public class Variable extends SymbolTable {
 	private VariableType type;
 	private String name;
 	private ClassTree classTree;
-
+	private String addr;
+	public void setAddr(String s) {
+		addr = s;
+	}
+	public String getAddr() {
+		return addr;
+	}
 	public Variable(String s) {
 		name = s;
 	}

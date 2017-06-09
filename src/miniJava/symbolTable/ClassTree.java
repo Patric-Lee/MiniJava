@@ -11,6 +11,16 @@ import java.util.Map;
  */
 public class ClassTree {
 	public static final HashMap<String, ClassTable> classes = new HashMap<String, ClassTable>();
+	public static void computeDVTable() {
+		Iterator iter = classes.entrySet().iterator();
+		while(iter.hasNext()) {
+			Map.Entry entry = (Map.Entry)iter.next();
+
+			NewClassTable newClassTable = ((NewClassTable)entry.getValue());
+			newClassTable.computeDTable(newClassTable.getDTable());
+			newClassTable.computeVTable(newClassTable.getVTable());
+		}
+	}
 	public static boolean addClass(ClassTable c) {
 		if(classes.containsKey(c.getName())) {
 			System.out.println(c.getName() + " has been defined.");

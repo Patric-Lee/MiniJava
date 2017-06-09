@@ -12,6 +12,7 @@ import java.util.Vector;
  */
 public class MethodTable extends SymbolTable {
 	private HashMap<String, Variable> localVariables = new HashMap<String, Variable>();
+	private HashMap<String, Variable> variables = new HashMap<String,Variable>();
 	private String name;
 	private Vector<Variable> params = new Vector<Variable>();
 	private VariableType returnType;
@@ -55,6 +56,10 @@ public class MethodTable extends SymbolTable {
 		}
 
 	}
+	public Variable getVar(String n) {
+		return variables.get(n);
+	}
+
 	@TestOnly
 	public void dump() {
 		System.out.println(name);
@@ -97,6 +102,7 @@ public class MethodTable extends SymbolTable {
 			return false;
 		}
 		localVariables.put(v.getName(), v);
+		variables.put(v.getName(), v);
 		return true;
 	}
 	public boolean isRepeated(Variable v) {
@@ -163,5 +169,14 @@ public class MethodTable extends SymbolTable {
 			return false;
 		}
 	}
+	public Integer indexParam(String s) {
+		int i = -1;
+		for(i = params.size() - 1; i >= 0; --i) {
+			if(params.elementAt(i).getName().equals(s)) {
+				break;
+			}
+		}
 
+		return i;
+	}
 }
